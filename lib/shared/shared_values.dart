@@ -1,0 +1,1 @@
+String baseUrlApp = "https://bwabank.my.id/api";
