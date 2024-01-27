@@ -28,13 +28,14 @@ class AuthService {
 
   Future<UserModel> register(SignUpFormModel data) async {
     try {
+      print(data.toJson());
+      print(data.ktp);
+      print("ENTER");
+      print(data.profilePicture);
       final res = await http.post(
-          Uri.parse(
-            '$baseUrlApp/register',
-          ),
-          body: {
-            'email': data.toJson(),
-          });
+        Uri.parse('$baseUrlApp/register'),
+        body: data.toJson(),
+      );
 
       if (res.statusCode == 200) {
         UserModel user = UserModel.fromJson(jsonDecode(res.body));
@@ -43,7 +44,7 @@ class AuthService {
         );
         return user;
       } else {
-        throw jsonDecode(res.body)['message'];
+        throw jsonDecode(res.body)['errors'];
       }
     } catch (e) {
       rethrow;

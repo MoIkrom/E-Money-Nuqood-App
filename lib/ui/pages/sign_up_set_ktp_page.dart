@@ -39,7 +39,6 @@ class _SignUpSetKtpPageState extends State<SignUpSetKtpPage> {
         listener: (context, state) {
           if (state is AuthFailed) {
             showCustomSnackBar(context, state.e);
-            print(state.e);
           }
           if (state is AuthSuccess) {
             Navigator.pushNamedAndRemoveUntil(
@@ -167,7 +166,7 @@ class _SignUpSetKtpPageState extends State<SignUpSetKtpPage> {
                         } else {
                           showCustomSnackBar(
                             context,
-                            "Image Connot be Empty!",
+                            "Image Cannot be Empty!",
                           );
                         }
                       },

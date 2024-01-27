@@ -18,11 +18,11 @@ class SignUpFormModel {
   Map<String, dynamic> toJson() {
     return {
       "name": name,
-      "email": name,
+      "email": email,
       "password": password,
       "pin": pin,
-      "profile_picture": profilePicture,
-      "ktp": ktp,
+      "profile_picture": profilePicture ?? "",
+      "ktp": ktp ?? "",
     };
   }
 

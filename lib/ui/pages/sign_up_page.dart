@@ -45,6 +45,11 @@ class _SignUpPageState extends State<SignUpPage> {
 
       return false;
     }
+    if (passwordController.text.length < 6) {
+      errorMessage = 'Password atleast 6 character';
+
+      return false;
+    }
     return true;
   }
 
