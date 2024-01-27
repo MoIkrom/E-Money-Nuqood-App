@@ -20,14 +20,51 @@ class _SignUpPageState extends State<SignUpPage> {
   final nameController = TextEditingController(text: '');
   final emailController = TextEditingController(text: '');
   final passwordController = TextEditingController(text: '');
+  final RegExp emailRegExp =
+      RegExp(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$");
+  String errorMessage = '';
 
   bool validate() {
-    if (nameController.text.isEmpty ||
-        emailController.text.isEmpty ||
-        passwordController.text.isEmpty) {
+    String email = emailController.text.trim();
+
+    if (nameController.text.isEmpty) {
+      errorMessage = 'Name Cannot be Empty!';
+
+      return false;
+    }
+    if (emailController.text.isEmpty) {
+      errorMessage = 'Email Cannot be Empty!';
+
+      return false;
+    } else if (!emailRegExp.hasMatch(email)) {
+      errorMessage = 'Invalid email format';
+      return false;
+    }
+    if (passwordController.text.isEmpty) {
+      errorMessage = 'Password Cannot be Empty!';
+
       return false;
     }
     return true;
+  }
+
+  void validateEmail() {
+    String email = emailController.text.trim();
+
+    if (email.isEmpty) {
+      setState(() {
+        errorMessage = 'Email cannot be empty';
+      });
+    } else if (!emailRegExp.hasMatch(email)) {
+      setState(() {
+        errorMessage = 'Invalid email format';
+      });
+    } else {
+      setState(() {
+        errorMessage = '';
+        // Lakukan tindakan lain jika email valid
+      });
+    }
   }
 
   @override
@@ -55,7 +92,23 @@ class _SignUpPageState extends State<SignUpPage> {
         builder: (context, state) {
           if (state is AuthLoading) {
             return const Center(
-              child: CircularProgressIndicator(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    "Loading...",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
             );
           }
           return ListView(
@@ -124,7 +177,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         } else {
                           showCustomSnackBar(
                             context,
-                            "All Field Must be Filled",
+                            errorMessage,
                           );
                         }
                       },

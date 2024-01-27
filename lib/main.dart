@@ -23,7 +23,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'ui/pages/home_page.dart';
 import 'ui/pages/sign_up_page.dart';
-import 'ui/pages/sign_up_set_ktp_page.dart';
 import 'ui/pages/sign_up_success_page.dart';
 
 void main() => runApp(const MyApp());
@@ -60,7 +59,6 @@ class MyApp extends StatelessWidget {
           '/onboarding': (context) => const onBoardingPage(),
           '/sign-in': (context) => const SignInPage(),
           '/sign-up': (context) => const SignUpPage(),
-          '/sign-up-set-ktp': (context) => const SignUpSetKtpPage(),
           '/sign-up-success': (context) => const SignUpSuccessPage(),
           '/home': (context) => const HomePage(),
           '/profile': (context) => const ProfilePage(),
