@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter_screenutil/flutter_screenutil.dart";
 import "package:nuqood/shared/shared_methods.dart";
 import "package:nuqood/shared/theme.dart";
 import 'package:nuqood/ui/widgets/home_latest_transaction_item.dart';
@@ -141,16 +142,16 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget buildWalletCard() {
+   Widget buildWalletCard() {
     return Container(
       width: double.infinity,
-      height: 220,
-      margin: const EdgeInsets.only(
+      height: 220.h,
+      margin: REdgeInsets.only(
         top: 30,
       ),
-      padding: const EdgeInsets.all(30),
+      padding: REdgeInsets.all(30),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(28).r,
         image: const DecorationImage(
           fit: BoxFit.cover,
           image: AssetImage('assets/img_bg_card.png'),
@@ -158,29 +159,36 @@ class HomePage extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            "Muhammad Ikram",
-            style: whiteTextStyle.copyWith(fontSize: 18, fontWeight: bold),
+          Wrap(
+            runSpacing: 25.h,
+            children: [
+              Text(
+                "Muhammad Ikram",
+                style:
+                    whiteTextStyle.copyWith(fontSize: 18.sp, fontWeight: bold),
+              ),
+              Text(
+                "**** **** **** 1818",
+                style: whiteTextStyle.copyWith(
+                    fontSize: 18.sp, fontWeight: bold, letterSpacing: 8),
+              ),
+            ],
           ),
-          const SizedBox(
-            height: 28,
-          ),
-          Text(
-            "**** **** **** 1818",
-            style: whiteTextStyle.copyWith(
-                fontSize: 18, fontWeight: bold, letterSpacing: 8),
-          ),
-          const SizedBox(
-            height: 25,
-          ),
-          Text(
-            "Balance",
-            style: whiteTextStyle,
-          ),
-          Text(
-            formatCurrency(50000000),
-            style: whiteTextStyle.copyWith(fontSize: 22, fontWeight: bold),
+          Wrap(
+            direction: Axis.vertical,
+            children: [
+              Text(
+                "Balance",
+                style: whiteTextStyle,
+              ),
+              Text(
+                formatCurrency(50000000),
+                style:
+                    whiteTextStyle.copyWith(fontSize: 22.sp, fontWeight: bold),
+              ),
+            ],
           ),
         ],
       ),

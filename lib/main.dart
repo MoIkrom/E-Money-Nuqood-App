@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:nuqood/blocs/auth/auth_bloc.dart';
 import 'package:nuqood/shared/theme.dart';
 import 'package:nuqood/ui/pages/data_package_page.dart';
@@ -32,51 +33,58 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => AuthBloc(),
+    return ScreenUtilInit(
+      designSize: Size(422, 915),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => AuthBloc()
+              ..add(
+                AuthGetCurrentUser(),
+              ),
+          ),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+              scaffoldBackgroundColor: lightBackgroundColor,
+              appBarTheme: AppBarTheme(
+                backgroundColor: lightBackgroundColor,
+                elevation: 0,
+                centerTitle: true,
+                iconTheme: IconThemeData(
+                  color: blackColor,
+                ),
+                titleTextStyle: blackTextStyle.copyWith(
+                  fontSize: 20,
+                  fontWeight: bold,
+                ),
+              )),
+          routes: {
+            '/': (context) => const SplashPage(),
+            '/onboarding': (context) => const onBoardingPage(),
+            '/sign-in': (context) => const SignInPage(),
+            '/sign-up': (context) => const SignUpPage(),
+            '/sign-up-success': (context) => const SignUpSuccessPage(),
+            '/home': (context) => const HomePage(),
+            '/profile': (context) => const ProfilePage(),
+            '/profile-edit': (context) => const ProfileEditPage(),
+            '/profile-edit-pin': (context) => const ProfileEditPinPage(),
+            '/profile-edit-success': (context) =>
+                const ProfileEditSuccessPage(),
+            '/pin': (context) => const PinPage(),
+            '/topup': (context) => const TopupPage(),
+            '/topup-amount': (context) => const TopupAmountPage(),
+            '/topup-success': (context) => const TopupSuccessPage(),
+            '/loading-page': (context) => const LoadingPage(),
+            '/transfer': (context) => const TransferPage(),
+            '/transfer-amount': (context) => const TransferAmountPage(),
+            '/transfer-success': (context) => const TransferSuccessPage(),
+            '/data-provider': (context) => const DataProviderPage(),
+            '/data-package': (context) => const DataPackage(),
+            '/data-package-success': (context) => const PackageSuccessPage(),
+          },
         ),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-            scaffoldBackgroundColor: lightBackgroundColor,
-            appBarTheme: AppBarTheme(
-              backgroundColor: lightBackgroundColor,
-              elevation: 0,
-              centerTitle: true,
-              iconTheme: IconThemeData(
-                color: blackColor,
-              ),
-              titleTextStyle: blackTextStyle.copyWith(
-                fontSize: 20,
-                fontWeight: bold,
-              ),
-            )),
-        routes: {
-          '/': (context) => const splashPage(),
-          '/onboarding': (context) => const onBoardingPage(),
-          '/sign-in': (context) => const SignInPage(),
-          '/sign-up': (context) => const SignUpPage(),
-          '/sign-up-success': (context) => const SignUpSuccessPage(),
-          '/home': (context) => const HomePage(),
-          '/profile': (context) => const ProfilePage(),
-          '/profile-edit': (context) => const ProfileEditPage(),
-          '/profile-edit-pin': (context) => const ProfileEditPinPage(),
-          '/profile-edit-success': (context) => const ProfileEditSuccessPage(),
-          '/pin': (context) => const PinPage(),
-          '/topup': (context) => const TopupPage(),
-          '/topup-amount': (context) => const TopupAmountPage(),
-          '/topup-success': (context) => const TopupSuccessPage(),
-          '/loading-page': (context) => const LoadingPage(),
-          '/transfer': (context) => const TransferPage(),
-          '/transfer-amount': (context) => const TransferAmountPage(),
-          '/transfer-success': (context) => const TransferSuccessPage(),
-          '/data-provider': (context) => const DataProviderPage(),
-          '/data-package': (context) => const DataPackage(),
-          '/data-package-success': (context) => const PackageSuccessPage(),
-        },
       ),
     );
   }

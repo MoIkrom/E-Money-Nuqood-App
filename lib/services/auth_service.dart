@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:nuqood/models/sign_in_fom.dart';
 import 'package:nuqood/models/sign_up_form_model.dart';
 import 'package:nuqood/models/user_model.dart';
 import 'package:nuqood/shared/shared_values.dart';
@@ -28,10 +30,6 @@ class AuthService {
 
   Future<UserModel> register(SignUpFormModel data) async {
     try {
-      print(data.toJson());
-      print(data.ktp);
-      print("ENTER");
-      print(data.profilePicture);
       final res = await http.post(
         Uri.parse('$baseUrlApp/register'),
         body: data.toJson(),
@@ -42,6 +40,7 @@ class AuthService {
         user = user.copyWith(
           password: data.password,
         );
+        await saveCredentialUser(user);
         return user;
       } else {
         throw jsonDecode(res.body)['errors'];
@@ -49,5 +48,77 @@ class AuthService {
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future<UserModel> login(SignInFormModel data) async {
+    try {
+      final res = await http.post(
+        Uri.parse('$baseUrlApp/login'),
+        body: data.toJson(),
+      );
+
+      if (res.statusCode == 200) {
+        UserModel user = UserModel.fromJson(jsonDecode(res.body));
+        user = user.copyWith(
+          password: data.password,
+        );
+
+        print("sampai sini masuk code auth serveice login");
+        await saveCredentialUser(user);
+
+        return user;
+      } else {
+        throw jsonDecode(res.body)['message'];
+        // throw jsonDecode(res.body)['message'];
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> saveCredentialUser(UserModel user) async {
+    try {
+      const storage = FlutterSecureStorage();
+      await storage.write(key: 'token', value: user.token);
+      await storage.write(key: 'email', value: user.email);
+      await storage.write(key: 'password', value: user.password);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<SignInFormModel> getCredentialUser() async {
+    try {
+      const storage = FlutterSecureStorage();
+      Map<String, String> values = await storage.readAll();
+
+      if (values['email'] != null || values['password'] != null) {
+        final SignInFormModel data = SignInFormModel(
+          email: values['email'],
+          password: values['password'],
+        );
+        return data;
+      } else {
+        throw 'Unauthorized';
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<String> getToken() async {
+    String token = "";
+    const storage = FlutterSecureStorage();
+    String? value = await storage.read(key: 'token');
+
+    if (value != null) {
+      token = 'Bearer ' + value;
+    }
+    return token;
+  }
+
+  Future<void> ClearCredentialUser() async {
+    const storage = FlutterSecureStorage();
+    await storage.deleteAll();
   }
 }
