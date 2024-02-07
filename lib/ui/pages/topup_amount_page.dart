@@ -138,11 +138,15 @@ class _TopupAmountPageState extends State<TopupAmountPage> {
         child: BlocConsumer<TopupBloc, TopupState>(
           listener: (context, state) async {
             if (state is TopupFailed) {
+              print("eroor top up");
+              print(state.e);
               showCustomSnackBar(context, state.e);
             }
             if (state is TopupSuccess) {
               // await launch(state.redirectUrl);
+              print("dibawah akan ada URL");
               Uri uri = Uri.parse(state.redirectUrl);
+              print(state.redirectUrl);
               launchUrl(uri);
               await Navigator.pushNamed(context, '/loading-page');
 
@@ -311,16 +315,25 @@ class _TopupAmountPageState extends State<TopupAmountPage> {
                 ),
                 CustomFilledButton(
                   title: 'Checkout Now',
-                  // onPressed: () async {
-                  //   if (await Navigator.pushNamed(context, '/pin') == true) {
-                  //     Uri uri = Uri.parse('https://demo.midtrans.com/');
-                  //     await launchUrl(uri);
-                  //     Navigator.pushNamed(context, '/home');
-                  //   }
-                  //   // await Navigator.pushNamed(context, '/topup-success');
-                  // },
-                  onPressed: () {
-                    handleButtonClick();
+                  onPressed: () async {
+                    if (await Navigator.pushNamed(context, '/pin') == true) {
+                      final authState = context.read<AuthBloc>().state;
+                      String pin = '';
+                      if (authState is AuthSuccess) {
+                        pin = authState.user.pin!;
+                      }
+
+                      context.read<TopupBloc>().add(
+                            TopUpPost(
+                              widget.data.copyWith(
+                                pin: pin,
+                                amount:
+                                    amountController.text.replaceAll(".", ''),
+                              ),
+                            ),
+                          );
+                    }
+                    // await Navigator.pushNamed(context, '/topup-success');
                   },
                 ),
                 const SizedBox(
