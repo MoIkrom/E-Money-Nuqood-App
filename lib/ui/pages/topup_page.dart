@@ -1,10 +1,24 @@
 import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
+import "package:flutter_screenutil/flutter_screenutil.dart";
+import "package:nuqood/blocs/auth/auth_bloc.dart";
+import "package:nuqood/blocs/payment_method/payment_method_bloc.dart";
+import "package:nuqood/models/payment_method_model.dart";
+import "package:nuqood/models/top_up_fom_model.dart";
 import "package:nuqood/shared/theme.dart";
+import "package:nuqood/ui/pages/topup_amount_page.dart";
 import 'package:nuqood/ui/widgets/card_list_item.dart';
 import "package:nuqood/ui/widgets/buttons.dart";
 
-class TopupPage extends StatelessWidget {
+class TopupPage extends StatefulWidget {
   const TopupPage({super.key});
+
+  @override
+  State<TopupPage> createState() => _TopupPageState();
+}
+
+class _TopupPageState extends State<TopupPage> {
+  PaymentMethodModel? selectedPayment;
 
   @override
   Widget build(BuildContext context) {
@@ -14,12 +28,12 @@ class TopupPage extends StatelessWidget {
         "Top Up",
       )),
       body: ListView(
-        padding: const EdgeInsets.symmetric(
+        padding: REdgeInsets.symmetric(
           horizontal: 24,
         ),
         children: [
-          const SizedBox(
-            height: 30,
+          SizedBox(
+            height: 30.h,
           ),
           Text(
             'Wallet',
@@ -28,41 +42,49 @@ class TopupPage extends StatelessWidget {
               fontWeight: bold,
             ),
           ),
-          const SizedBox(
-            height: 10,
+          SizedBox(
+            height: 10.h,
           ),
-          Row(
-            children: [
-              Image.asset(
-                'assets/img_wallet.png',
-                width: 80,
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "081919188291",
-                    style: blackTextStyle.copyWith(
-                      fontSize: 16,
-                      fontWeight: bold,
+          BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) {
+              if (state is AuthSuccess) {
+                return Row(
+                  children: [
+                    Image.asset(
+                      'assets/img_wallet.png',
+                      width: 80.w,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 2,
-                  ),
-                  Text(
-                    "Muhammad Ikram",
-                    style: greyTextStyle,
-                  ),
-                ],
-              )
-            ],
+                    SizedBox(
+                      width: 10.w,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          state.user.cardNumber!.replaceAllMapped(
+                              RegExp(r".{4}"), (match) => "${match.group(0)} "),
+                          style: blackTextStyle.copyWith(
+                            fontSize: 16,
+                            fontWeight: bold,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 2.h,
+                        ),
+                        Text(
+                          state.user.name.toString(),
+                          style: greyTextStyle,
+                        ),
+                      ],
+                    )
+                  ],
+                );
+              }
+              return Container();
+            },
           ),
-          const SizedBox(
-            height: 40,
+          SizedBox(
+            height: 40.h,
           ),
           Text(
             'Select Bank',
@@ -71,41 +93,65 @@ class TopupPage extends StatelessWidget {
               fontWeight: bold,
             ),
           ),
-          const SizedBox(
-            height: 20,
+          SizedBox(
+            height: 20.h,
           ),
-          const CardListItem(
-            title: "Bank BCA",
-            subTitle: "50 Mins",
-            imageUrl: "assets/img_bank_bca.png",
-            isSelected: true,
+          BlocProvider(
+            create: (context) => PaymentMethodBloc()..add(PaymentMethodGet()),
+            child: BlocBuilder<PaymentMethodBloc, PaymentMethodState>(
+              builder: (context, state) {
+                if (state is PaymentMethodSuccess) {
+                  return Column(
+                    children: state.paymentMethods.map((paymentMethod) {
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedPayment = paymentMethod;
+                          });
+                        },
+                        child: CardListItem(
+                          paymentMethod: paymentMethod,
+                          subTitle: "15 Mins",
+                          isSelected: paymentMethod.id == selectedPayment?.id,
+                        ),
+                      );
+                    }).toList(),
+                  );
+                }
+                return Column(
+                  children: [
+                    const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    SizedBox(
+                      height: 30.h,
+                    )
+                  ],
+                );
+              },
+            ),
           ),
-          const CardListItem(
-            title: "Bank BNI",
-            subTitle: "50 Mins",
-            imageUrl: "assets/img_bank_bni.png",
+          SizedBox(
+            height: 12.h,
           ),
-          const CardListItem(
-            title: "Bank Mandiri",
-            subTitle: "50 Mins",
-            imageUrl: "assets/img_bank_mandiri.png",
-          ),
-          const CardListItem(
-            title: "Bank OCBC",
-            subTitle: "50 Mins",
-            imageUrl: "assets/img_bank_ocbc.png",
-          ),
-          const SizedBox(
-            height: 12,
-          ),
-          CustomFilledButton(
-            title: "Continue",
-            onPressed: () {
-              Navigator.pushNamed(context, '/topup-amount');
-            },
-          ),
-          const SizedBox(
-            height: 57,
+          if (selectedPayment != null)
+            CustomFilledButton(
+              title: "Continue",
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TopupAmountPage(
+                      data: TopupFormModel(
+                        paymentMethodCode: selectedPayment?.code,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          SizedBox(
+            height: 57.h,
           ),
         ],
       ),

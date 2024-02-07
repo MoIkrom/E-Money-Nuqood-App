@@ -52,8 +52,6 @@ class _SignInPageState extends State<SignInPage> {
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthFailed) {
-            print("error wou");
-            print(state);
             showCustomSnackBar(context, state.e);
           }
           if (state is AuthSuccess) {

@@ -14,7 +14,6 @@ import 'package:nuqood/ui/pages/profile_edit_success_page.dart';
 import 'package:nuqood/ui/pages/profile_page.dart';
 import 'package:nuqood/ui/pages/sign_in_page.dart';
 import 'package:nuqood/ui/pages/splash_page.dart';
-import 'package:nuqood/ui/pages/topup_amount_page.dart';
 import 'package:nuqood/ui/pages/topup_page.dart';
 import 'package:nuqood/ui/pages/topup_success_page.dart';
 import 'package:nuqood/ui/pages/transfer_amount_page.dart';
@@ -74,7 +73,6 @@ class MyApp extends StatelessWidget {
                 const ProfileEditSuccessPage(),
             '/pin': (context) => const PinPage(),
             '/topup': (context) => const TopupPage(),
-            '/topup-amount': (context) => const TopupAmountPage(),
             '/topup-success': (context) => const TopupSuccessPage(),
             '/loading-page': (context) => const LoadingPage(),
             '/transfer': (context) => const TransferPage(),

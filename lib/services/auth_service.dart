@@ -21,7 +21,7 @@ class AuthService {
       if (res.statusCode == 200) {
         return jsonDecode(res.body)['is_email_exist'];
       } else {
-        return jsonDecode(res.body)['errors'];
+        return jsonDecode(res.body)['message'];
       }
     } catch (e) {
       rethrow;
@@ -43,7 +43,7 @@ class AuthService {
         await saveCredentialUser(user);
         return user;
       } else {
-        throw jsonDecode(res.body)['errors'];
+        throw jsonDecode(res.body)['message'];
       }
     } catch (e) {
       rethrow;
@@ -62,14 +62,33 @@ class AuthService {
         user = user.copyWith(
           password: data.password,
         );
-
-        print("sampai sini masuk code auth serveice login");
         await saveCredentialUser(user);
 
         return user;
       } else {
         throw jsonDecode(res.body)['message'];
-        // throw jsonDecode(res.body)['message'];
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> logout() async {
+    try {
+      final token = await AuthService().getToken();
+
+      final res = await http.post(
+          Uri.parse(
+            '$baseUrlApp/logout',
+          ),
+          headers: {
+            'Authorization': token,
+          });
+
+      if (res.statusCode == 200) {
+        await ClearCredentialUser();
+      } else {
+        throw jsonDecode(res.body)['message'];
       }
     } catch (e) {
       rethrow;

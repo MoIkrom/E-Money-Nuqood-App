@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_screenutil/flutter_screenutil.dart";
+import "package:nuqood/blocs/auth/auth_bloc.dart";
 import "package:nuqood/shared/shared_methods.dart";
 import "package:nuqood/shared/theme.dart";
 import 'package:nuqood/ui/widgets/home_latest_transaction_item.dart';
@@ -35,26 +37,26 @@ class HomePage extends StatelessWidget {
               BottomNavigationBarItem(
                   icon: Image.asset(
                     'assets/ic_overview.png',
-                    width: 20,
+                    width: 20.w,
                     color: blueColor,
                   ),
                   label: 'Overview'),
               BottomNavigationBarItem(
                   icon: Image.asset(
                     'assets/ic_history.png',
-                    width: 20,
+                    width: 20.w,
                   ),
                   label: 'History'),
               BottomNavigationBarItem(
                   icon: Image.asset(
                     'assets/ic_statistic.png',
-                    width: 20,
+                    width: 20.w,
                   ),
                   label: 'Statistic'),
               BottomNavigationBarItem(
                   icon: Image.asset(
                     'assets/ic_reward.png',
-                    width: 20,
+                    width: 20.w,
                   ),
                   label: 'Reward'),
             ]),
@@ -64,7 +66,7 @@ class HomePage extends StatelessWidget {
         backgroundColor: purpleColor,
         child: Image.asset(
           'assets/ic_plus_circle.png',
-          width: 24,
+          width: 24.w,
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -84,114 +86,137 @@ class HomePage extends StatelessWidget {
   }
 
   Widget buildProfile(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(
-        top: 60,
-      ),
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Hello",
-              style: greyTextStyle.copyWith(fontSize: 16, fontWeight: medium),
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        if (state is AuthSuccess) {
+          return Container(
+            margin: const EdgeInsets.only(
+              top: 60,
             ),
-            const SizedBox(
-              height: 2,
-            ),
-            Text(
-              'Muhammad Ikram',
-              style: blackTextStyle.copyWith(fontSize: 20, fontWeight: bold),
-            )
-          ],
-        ),
-        GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, '/profile');
-          },
-          child: Container(
-            width: 60,
-            height: 60,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                image: AssetImage(
-                  'assets/img_profile.png',
-                ),
-              ),
-            ),
-            child: Align(
-              alignment: Alignment.topRight,
-              child: Container(
-                width: 16,
-                height: 16,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: whiteColor,
-                ),
-                child: Icon(
-                  Icons.check_circle,
-                  color: greenColor,
-                  size: 14,
-                ),
-              ),
-            ),
-          ),
-        )
-      ]),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Hello",
+                        style: greyTextStyle.copyWith(
+                            fontSize: 16, fontWeight: medium),
+                      ),
+                      const SizedBox(
+                        height: 2,
+                      ),
+                      Text(
+                        state.user.username.toString(),
+                        style: blackTextStyle.copyWith(
+                            fontSize: 20, fontWeight: bold),
+                      )
+                    ],
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/profile');
+                    },
+                    child: Container(
+                      width: 60.w,
+                      height: 60.h,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: state.user.profilePicture == null
+                              ? const AssetImage(
+                                  'assets/user-picture.png',
+                                )
+                              : NetworkImage(state.user.profilePicture!)
+                                  as ImageProvider,
+                        ),
+                      ),
+                      child: state.user.verified == 1
+                          ? Align(
+                              alignment: Alignment.topRight,
+                              child: Container(
+                                width: 16.w,
+                                height: 16.h,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: whiteColor,
+                                ),
+                                child: Icon(
+                                  Icons.check_circle,
+                                  color: greenColor,
+                                  size: 14,
+                                ),
+                              ),
+                            )
+                          : null,
+                    ),
+                  )
+                ]),
+          );
+        }
+        return Container();
+      },
     );
   }
 
-   Widget buildWalletCard() {
-    return Container(
-      width: double.infinity,
-      height: 220.h,
-      margin: REdgeInsets.only(
-        top: 30,
-      ),
-      padding: REdgeInsets.all(30),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(28).r,
-        image: const DecorationImage(
-          fit: BoxFit.cover,
-          image: AssetImage('assets/img_bg_card.png'),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Wrap(
-            runSpacing: 25.h,
-            children: [
-              Text(
-                "Muhammad Ikram",
-                style:
-                    whiteTextStyle.copyWith(fontSize: 18.sp, fontWeight: bold),
+  Widget buildWalletCard() {
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        if (state is AuthSuccess) {
+          return Container(
+            width: double.infinity,
+            height: 220.h,
+            margin: REdgeInsets.only(
+              top: 30,
+            ),
+            padding: REdgeInsets.all(30),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(28).r,
+              image: const DecorationImage(
+                fit: BoxFit.cover,
+                image: AssetImage('assets/img_bg_card.png'),
               ),
-              Text(
-                "**** **** **** 1818",
-                style: whiteTextStyle.copyWith(
-                    fontSize: 18.sp, fontWeight: bold, letterSpacing: 8),
-              ),
-            ],
-          ),
-          Wrap(
-            direction: Axis.vertical,
-            children: [
-              Text(
-                "Balance",
-                style: whiteTextStyle,
-              ),
-              Text(
-                formatCurrency(50000000),
-                style:
-                    whiteTextStyle.copyWith(fontSize: 22.sp, fontWeight: bold),
-              ),
-            ],
-          ),
-        ],
-      ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Wrap(
+                  runSpacing: 20.h,
+                  children: [
+                    Text(
+                      state.user.name.toString(),
+                      style: whiteTextStyle.copyWith(
+                          fontSize: 18.sp, fontWeight: bold),
+                    ),
+                    Text(
+                      "**** **** **** ${state.user.cardNumber!.substring(12, 16)}",
+                      style: whiteTextStyle.copyWith(
+                          fontSize: 18.sp, fontWeight: bold, letterSpacing: 8),
+                    ),
+                  ],
+                ),
+                Wrap(
+                  direction: Axis.vertical,
+                  children: [
+                    Text(
+                      "Balance",
+                      style: whiteTextStyle,
+                    ),
+                    Text(
+                      formatCurrency(state.user.balance ?? 0),
+                      style: whiteTextStyle.copyWith(
+                          fontSize: 22.sp, fontWeight: bold),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        }
+        return Container();
+      },
     );
   }
 
@@ -225,8 +250,8 @@ class HomePage extends StatelessWidget {
               )
             ],
           ),
-          const SizedBox(
-            height: 10,
+          SizedBox(
+            height: 10.h,
           ),
           ClipRRect(
             borderRadius: BorderRadius.circular(55),
@@ -255,8 +280,8 @@ class HomePage extends StatelessWidget {
             "Do Something",
             style: blackTextStyle.copyWith(fontSize: 16, fontWeight: bold),
           ),
-          const SizedBox(
-            height: 18,
+          SizedBox(
+            height: 18.h,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -370,7 +395,7 @@ class HomePage extends StatelessWidget {
             style: blackTextStyle.copyWith(fontSize: 16, fontWeight: black),
           ),
           SizedBox(
-            height: 14,
+            height: 14.h,
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -413,7 +438,7 @@ class HomePage extends StatelessWidget {
             style: blackTextStyle.copyWith(fontSize: 16, fontWeight: black),
           ),
           SizedBox(
-            height: 14,
+            height: 14.h,
           ),
           Wrap(
             spacing: 10,
@@ -457,7 +482,7 @@ class MoreDialog extends StatelessWidget {
       insetPadding: EdgeInsets.zero,
       alignment: Alignment.bottomCenter,
       content: Container(
-        height: 326,
+        height: 326.h,
         width: MediaQuery.of(context).size.width,
         padding: const EdgeInsets.all(30),
         decoration: BoxDecoration(
@@ -476,13 +501,13 @@ class MoreDialog extends StatelessWidget {
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-                const SizedBox(
-                  height: 20,
+                SizedBox(
+                  height: 20.h,
                 ),
               ],
             ),
-            const SizedBox(
-              height: 20,
+            SizedBox(
+              height: 20.h,
             ),
             Column(children: [
               Wrap(
@@ -571,7 +596,7 @@ class disableContent extends StatelessWidget {
       insetPadding: EdgeInsets.zero,
       alignment: Alignment.center,
       content: Container(
-        height: 100,
+        height: 100.h,
         width: MediaQuery.of(context).size.width,
         padding: const EdgeInsets.all(30),
         decoration: BoxDecoration(

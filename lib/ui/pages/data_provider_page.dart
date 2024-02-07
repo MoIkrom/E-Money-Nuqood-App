@@ -1,7 +1,6 @@
 import "package:flutter/material.dart";
 import "package:nuqood/shared/shared_methods.dart";
 import "package:nuqood/shared/theme.dart";
-import 'package:nuqood/ui/widgets/card_list_item.dart';
 import "package:nuqood/ui/widgets/buttons.dart";
 
 class DataProviderPage extends StatelessWidget {
@@ -75,22 +74,6 @@ class DataProviderPage extends StatelessWidget {
           ),
           const SizedBox(
             height: 20,
-          ),
-          const CardListItem(
-            title: "Telkomsel",
-            subTitle: "Available",
-            imageUrl: "assets/img_provider_telkomsel.png",
-            isSelected: true,
-          ),
-          const CardListItem(
-            title: "Indosat",
-            subTitle: "Available",
-            imageUrl: "assets/img_provider_indosat.png",
-          ),
-          const CardListItem(
-            title: "Singtel",
-            subTitle: "Available",
-            imageUrl: "assets/img_provider_singtel.png",
           ),
           const SizedBox(
             height: 100,
