@@ -62,6 +62,7 @@ class AuthService {
         UserModel user = UserModel.fromJson(jsonDecode(res.body));
         user = user.copyWith(
           password: data.password,
+          balance:user.balance,
         );
         await saveCredentialUser(user);
 

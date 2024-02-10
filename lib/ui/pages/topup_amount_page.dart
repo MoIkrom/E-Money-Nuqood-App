@@ -169,15 +169,10 @@ class _TopupAmountPageState extends State<TopupAmountPage> {
         child: BlocConsumer<TopupBloc, TopupState>(
           listener: (context, state) async {
             if (state is TopupFailed) {
-              print("eroor top up");
-              print(state.e);
               showCustomSnackBar(context, state.e);
             }
             if (state is TopupSuccess) {
-              // await launch(state.redirectUrl);
-              print("dibawah akan ada URL");
               Uri uri = Uri.parse(state.redirectUrl);
-              print(state.redirectUrl);
               launchUrl(uri);
               await Navigator.pushNamed(context, '/loading-page');
 

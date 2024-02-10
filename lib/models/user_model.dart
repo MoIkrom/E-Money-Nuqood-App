@@ -1,4 +1,4 @@
-  class UserModel {
+class UserModel {
   final int? id;
   final String? name;
   final String? email;
@@ -52,6 +52,7 @@
         email: email ?? this.email,
         password: password ?? this.password,
         pin: pin ?? this.pin,
+        balance: balance ?? this.balance,
         verified: verified,
         profilePicture: profilePicture,
         cardNumber: cardNumber,

@@ -205,7 +205,8 @@ class HomePage extends StatelessWidget {
                       style: whiteTextStyle,
                     ),
                     Text(
-                      formatCurrency(state.user.balance ?? 0),
+                      // formatCurrency(state.user.balance ?? 0),
+                      state.user.balance.toString(),
                       style: whiteTextStyle.copyWith(
                           fontSize: 22.sp, fontWeight: bold),
                     ),

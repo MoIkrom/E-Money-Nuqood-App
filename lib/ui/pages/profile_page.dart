@@ -74,7 +74,7 @@ class ProfilePage extends StatelessWidget {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           image: DecorationImage(
-                            image: state.user.profilePicture == null
+                            image: state.user.profilePicture!.isEmpty
                                 ? const AssetImage(
                                     'assets/user-picture.png',
                                   )
