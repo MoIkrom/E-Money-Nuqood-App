@@ -18,15 +18,14 @@ class TransactionService {
         headers: {
           'Authorization': token,
         },
-        body: {
-          data.toJson(),
-        },
+        body: data.toJson(),
       );
+      print(res.body);
 
-      if (res.statusCode != 200) {
-        throw jsonDecode(res.body)['message'];
+      if (res.statusCode == 200) {
+        return jsonDecode(res.body)['redirect_url'];
       }
-      return jsonDecode(res.body)['redirect_url'];
+      throw jsonDecode(res.body)['message'];
     } catch (e) {
       rethrow;
     }

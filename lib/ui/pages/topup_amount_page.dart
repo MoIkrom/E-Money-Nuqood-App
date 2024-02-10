@@ -53,38 +53,69 @@ class _TopupAmountPageState extends State<TopupAmountPage> {
     }
   }
 
-  void handleButtonClick() async {
+  bool validateAmount() {
     final text = amountController.text;
     int parsedValue = int.parse(text.replaceAll('.', ''));
 
-    // Tentukan waktu penundaan (1 detik = 1000 milidetik)
-    try {
-      if (parsedValue < 10000) {
-        // Jika kurang dari Rp 10.000, tampilkan alert
-        showAlert('Warning !', 'Minimum Top Up is : ${formatCurrency(10000)}');
+    if (parsedValue < 10000) {
+      // Jika kurang dari Rp 10.000, tampilkan alert
+      showAlert('Warning !', 'Minimum Top Up is : ${formatCurrency(10000)}');
 
-        //  Atur nilainya ke 0
-        parsedValue = 0;
-      } else if (parsedValue > 5000000) {
-        // Jika lebih dari Rp 5.000.000, tampilkan alert
-        showAlert(
-            'Warning !', 'Maximum Top Up is :  ${formatCurrency(5000000)}');
+      //  Atur nilainya ke 0
+      parsedValue = 0;
+      return false;
+    } else if (parsedValue > 5000000) {
+      // Jika lebih dari Rp 5.000.000, tampilkan alert
+      showAlert('Warning !', 'Maximum Top Up is :  ${formatCurrency(5000000)}');
 
-        //  Atur nilainya kembali ke 0
-        parsedValue = 0;
-      } else {
-        handleAmountChange();
-        if (await Navigator.pushNamed(context, '/pin') == true) {
-          Uri uri = Uri.parse('https://demo.midtrans.com/');
-          launchUrl(uri);
-          await Navigator.pushNamed(context, '/loading-page');
-        }
-      }
-    } catch (e) {
-      // Tampilkan atau tangani kesalahan parsing di sini
-      print('Error parsing amount: $e');
+      //  Atur nilainya kembali ke 0
+      parsedValue = 0;
+      return false;
+    } else {
+      return true;
     }
   }
+  // void validateAmount() async {
+  //   final text = amountController.text;
+  //   int parsedValue = int.parse(text.replaceAll('.', ''));
+
+  //   // Tentukan waktu penundaan (1 detik = 1000 milidetik)
+  //   try {
+  //     if (parsedValue < 10000) {
+  //       // Jika kurang dari Rp 10.000, tampilkan alert
+  //       showAlert('Warning !', 'Minimum Top Up is : ${formatCurrency(10000)}');
+
+  //       //  Atur nilainya ke 0
+  //       parsedValue = 0;
+  //     } else if (parsedValue > 5000000) {
+  //       // Jika lebih dari Rp 5.000.000, tampilkan alert
+  //       showAlert(
+  //           'Warning !', 'Maximum Top Up is :  ${formatCurrency(5000000)}');
+
+  //       //  Atur nilainya kembali ke 0
+  //       parsedValue = 0;
+  //     } else {
+  //       if (await Navigator.pushNamed(context, '/pin') == true) {
+  //         final authState = context.read<AuthBloc>().state;
+  //         String pin = '';
+  //         if (authState is AuthSuccess) {
+  //           pin = authState.user.pin!;
+  //         }
+  //         context.read<TopupBloc>().add(
+  //               TopUpPost(
+  //                 widget.data.copyWith(
+  //                   pin: pin,
+  //                   amount: amountController.text.replaceAll(".", ''),
+  //                 ),
+  //               ),
+  //             );
+  //       }
+  //     }
+  //   } catch (e) {
+  //     // Tampilkan atau tangani kesalahan parsing di sini
+  //     print('Error parsing amount: $e');
+  //   }
+  // }
 
   void showAlert(String title, String content) {
     showDialog(
@@ -314,28 +345,28 @@ class _TopupAmountPageState extends State<TopupAmountPage> {
                   height: 59,
                 ),
                 CustomFilledButton(
-                  title: 'Checkout Now',
-                  onPressed: () async {
-                    if (await Navigator.pushNamed(context, '/pin') == true) {
-                      final authState = context.read<AuthBloc>().state;
-                      String pin = '';
-                      if (authState is AuthSuccess) {
-                        pin = authState.user.pin!;
+                    title: 'Checkout Now',
+                    onPressed: () async {
+                      if (validateAmount()) {
+                        if (await Navigator.pushNamed(context, '/pin') ==
+                            true) {
+                          final authState = context.read<AuthBloc>().state;
+                          String pin = '';
+                          if (authState is AuthSuccess) {
+                            pin = authState.user.pin!;
+                          }
+                          context.read<TopupBloc>().add(
+                                TopUpPost(
+                                  widget.data.copyWith(
+                                    pin: pin,
+                                    amount: amountController.text
+                                        .replaceAll(".", ''),
+                                  ),
+                                ),
+                              );
+                        }
                       }
-
-                      context.read<TopupBloc>().add(
-                            TopUpPost(
-                              widget.data.copyWith(
-                                pin: pin,
-                                amount:
-                                    amountController.text.replaceAll(".", ''),
-                              ),
-                            ),
-                          );
-                    }
-                    // await Navigator.pushNamed(context, '/topup-success');
-                  },
-                ),
+                    },),
                 const SizedBox(
                   height: 25,
                 ),

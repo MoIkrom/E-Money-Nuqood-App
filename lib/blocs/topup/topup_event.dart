@@ -17,3 +17,14 @@ class TopUpPost extends TopupEvent {
   @override
   List<Object> get props => [data];
 }
+
+class TopUpPosted extends TopupEvent {
+  final TopupFormModel data;
+
+  const TopUpPosted(
+    this.data,
+  );
+
+  @override
+  List<Object> get props => [data];
+}
